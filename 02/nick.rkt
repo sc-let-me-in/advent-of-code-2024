@@ -2,6 +2,7 @@
 
 (require rackunit)
 (require "../input.rkt")
+(require "../nickutil.rkt")
 
 (define example #<<eof
 7 6 4 2 1
@@ -18,11 +19,12 @@ eof
   (map (compose (curry map string->number) string-split)
        (string-split in "\n")))
 
-;; brute force check if list is sorted assending/decending and diffs are witin 3, nonzero
+;; check if list is sorted ascending/descending by diffs are within 3, nonzero
 (define (safe? l)
-  (and (or (eq? (sort l <) l)
-           (eq? (sort l >) l))
-       (andmap (λ (curr prev) (< 0 (abs (- curr prev)) 4)) (take l (sub1 (length l))) (rest l))))
+  (let* ([diffs (map (curry apply -) (window 2 l))]
+         [min (apply min diffs)]
+         [max (apply max diffs)])
+    (or (<= -3 min max -1) (<= 1 min max 3))))
 
 (define (p1 in)
   (count safe? (parse in)))
@@ -30,10 +32,9 @@ eof
 (check-equal? (p1 example) 2)
 (p1 in)
 
-;; brute force check if any sublists are safe by dropping 1
+;; check if any sublists are safe by dropping 1 element
 (define (safe-ish? l)
-  (ormap safe? (for/list ([i (in-range (length l))])
-                 (append (take l i) (drop l (add1 i))))))
+  (ormap safe? (combinations l (sub1 (length l)))))
 
 (define (p2 in)
   (count safe-ish? (parse in)))
