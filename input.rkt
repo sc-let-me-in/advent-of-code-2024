@@ -9,6 +9,8 @@
     (if (file-exists? filename)
         (file->string filename)
         (let ([input (download day)])
+          (unless (directory-exists? (path-only filename))
+            (make-directory (path-only filename)))
           (call-with-output-file filename (curry display input))
           input))))
 
