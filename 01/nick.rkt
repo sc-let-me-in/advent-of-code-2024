@@ -19,15 +19,15 @@ eof
        (string-split in "\n")))
 
 (define (p1 in)
-  (let-values ([(left right) (apply values (apply map (compose (curryr sort <) list) (parse in)))])
+  (match-let ([(list left right) (apply map (compose (curryr sort <) list) (parse in))])
     (foldl (λ (l r acc) (+ acc (abs (- l r)))) 0 left right)))
 
 (check-equal? (p1 example) 11)
 (p1 in)
 
 (define (p2 in)
-  (let*-values ([(left right) (apply values (apply map list (parse in)))]
-                [(counts) (foldl (λ (val acc) (hash-update acc val add1 0)) (hash) right)])
+  (match-let* ([(list left right) (apply map list (parse in))]
+               [(var counts) (foldl (λ (val acc) (hash-update acc val add1 0)) (hash) right)])
     (foldl (λ (val acc) (+ acc (* val (hash-ref counts val 0)))) 0 left)))
 
 (check-equal? (p2 example) 31)

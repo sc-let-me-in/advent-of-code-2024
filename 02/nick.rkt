@@ -21,7 +21,7 @@ eof
 
 ;; check if list is sorted ascending/descending by diffs are within 3, nonzero
 (define (safe? l)
-  (let* ([diffs (map (curry apply -) (window 2 l))]
+  (let* ([diffs (map (match-lambda [(list l r) (- r l)]) (window 2 l))]
          [min (apply min diffs)]
          [max (apply max diffs)])
     (or (<= -3 min max -1) (<= 1 min max 3))))
