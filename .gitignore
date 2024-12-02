@@ -5,3 +5,5 @@ compiled/
 *.bak
 \#*
 .\#*
+inputs
+session.cookie

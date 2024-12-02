@@ -1,9 +1,33 @@
 #lang racket
 
-(define lines (file->lines "01/nick.txt"))
-(define parsed (map (compose (curry map string->number) string-split) lines))
-(define-values (left right) (apply values (apply map (compose (curryr sort <) list) parsed)))
-(define part-1 (foldl (λ (l r acc) (+ acc (abs (- l r)))) 0 left right))
-(define part-2 (foldl (λ (v acc) (+ acc (* v (count (curry = v) right)))) 0 left))
-part-1
-part-2
+(require rackunit)
+(require "../input.rkt")
+
+(define example #<<eof
+3   4
+4   3
+2   5
+1   3
+3   9
+3   3
+eof
+  )
+(define in (input 1))
+
+(define (parse in)
+  (map (compose (curry map string->number) string-split)
+       (string-split in "\n")))
+
+(define (p1 in)
+  (let-values ([(left right) (apply values (apply map (compose (curryr sort <) list) (parse in)))])
+    (foldl (λ (l r acc) (+ acc (abs (- l r)))) 0 left right)))
+    
+(check-equal? (p1 example) 11)
+(p1 in)
+
+(define (p2 in)
+  (let-values ([(left right) (apply values (apply map list (parse in)))])
+    (foldl (λ (val acc) (+ acc (* val (count (curry = val) right)))) 0 left)))
+
+(check-equal? (p2 example) 31)
+(p2 in)
