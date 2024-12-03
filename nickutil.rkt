@@ -6,11 +6,10 @@
 
 ;; returns a sliding list of lists window of size n
 (define (window n xs)
-  (define (window-acc xs acc)
+  (let loop ([xs xs] [acc '()])
     (if (< (length xs) n)
         (reverse acc)
-        (window-acc (rest xs) (cons (take xs n) acc))))
-  (window-acc xs '()))
+        (loop (rest xs) (cons (take xs n) acc)))))
 
 (check-equal? (window 1 '(1 2 3 4)) '((1) (2) (3) (4)))
 (check-equal? (window 2 '(1 2 3 4)) '((1 2) (2 3) (3 4)))
