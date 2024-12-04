@@ -43,7 +43,8 @@ eof
   )
 
 (define (count-xmas str)
-  (+ (length (regexp-match* #rx"XMAS" str)) (length (regexp-match* #rx"SAMX" str))))
+  ; X and S can be shared with next match, so use positive look(behind/ahead) to check shared letters
+  (length (regexp-match* #rx"(?<=X)MA(?=S)|(?<=S)AM(?=X)" str))) 
 
 (define (string->matrix str)
   (map string->list (string-split str "\n")))
