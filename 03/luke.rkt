@@ -2,10 +2,23 @@
 
 
 (require "../input.rkt")
-;; gonna copy PL on this one >:)
 
 (define (calc-mul-expr expr)
     (foldl * 1 (map string->number (regexp-match* #rx"[0-9]+" expr))))
 
+(define (execute expr active-status)
+        (match expr
+            [(regexp #rx"do") (set-box! active-status 1) 0]
+            [(regexp #rx"don't") (set-box! active-status 0) 0]
+            [(regexp #rx"mul") (* (unbox active-status) (calc-mul-expr expr))]
+            [_ (error expr)]))
+
+
 ;; get mul exprs with regex (ugh hacky ik)
-(foldl + 0 (map calc-mul-expr (regexp-match* #px"mul\\(-?[0-9]+,-?[0-9]+\\)" (input 3))))
+(define muls (regexp-match* #px"(mul\\(-?[0-9]+,-?[0-9]+\\))" (input 3)))
+(define instrs (regexp-match* #px"(mul\\(-?[0-9]+,-?[0-9]+\\))|(do\\(\\))|(don't\\(\\))" (input 3)))
+
+(foldl + 0 (map calc-mul-expr muls))
+
+(let ([active-status (box 1)])
+    (foldr (lambda (e n) (+ n (execute e active-status))) 0 instrs))
