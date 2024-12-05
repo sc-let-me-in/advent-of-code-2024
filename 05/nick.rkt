@@ -40,7 +40,8 @@ eof
 (define (parse in)
   (define-values (rules updates) (apply values (string-split in "\n\n")))
   (define (parse-nums str sep)
-    (map (λ (n) (map string->number (string-split n sep))) (string-split str "\n")))
+    (for/list ([nums (string-split str "\n")])
+      (map string->number (string-split nums sep))))
   (values
    (parse-nums rules "|")
    (parse-nums updates ",")))
@@ -60,7 +61,8 @@ eof
   (sort update #:key (λ (p) (length (hash-ref rules-ht p '()))) >))
 
 (define (sum-middle updates)
-  (foldl + 0 (map (λ (update) (list-ref update (floor (/ (length update) 2)))) updates)))
+  (for/fold ([acc 0]) ([update updates])
+    (+ acc (list-ref update (floor (/ (length update) 2))))))
 
 (define (sum-updates in)
   (let*-values ([(rules updates) (parse in)]
