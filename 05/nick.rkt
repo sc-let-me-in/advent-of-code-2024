@@ -57,8 +57,7 @@ eof
      (and valid? (andmap (compose not (curryr member (hash-ref rules-ht page '()))) seen)))))
 
 (define (fix-order update rules-ht)
-  (let ([page-indices (for/hash ([(k v) rules-ht]) (values k (count (curryr member update) v)))])
-    (sort update #:key (λ (p) (hash-ref page-indices p 0)) >)))
+  (sort update #:key (λ (p) (length (hash-ref rules-ht p '()))) >))
 
 (define (sum-middle updates)
   (foldl + 0 (map (λ (update) (list-ref update (floor (/ (length update) 2)))) updates)))
