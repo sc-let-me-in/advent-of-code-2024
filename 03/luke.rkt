@@ -6,10 +6,10 @@
 (define (calc-mul-expr expr)
     (foldl * 1 (map string->number (regexp-match* #rx"[0-9]+" expr))))
 
-(define (execute expr active-status)
+(define (exec-add expr active-status)
         (match expr
-            [(regexp #rx"do") (set-box! active-status 1) 0]
             [(regexp #rx"don't") (set-box! active-status 0) 0]
+            [(regexp #rx"do") (set-box! active-status 1) 0]
             [(regexp #rx"mul") (* (unbox active-status) (calc-mul-expr expr))]
             [_ (error expr)]))
 
@@ -21,4 +21,4 @@
 (foldl + 0 (map calc-mul-expr muls))
 
 (let ([active-status (box 1)])
-    (foldr (lambda (e n) (+ n (execute e active-status))) 0 instrs))
+    (foldl (lambda (e n) (+ n (exec-add e active-status))) 0 instrs))
