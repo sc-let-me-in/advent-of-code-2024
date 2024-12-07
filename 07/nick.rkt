@@ -26,17 +26,14 @@ eof
 (define (concat l r)
   (inexact->exact (+ (* l (expt 10 (add1 (floor (log r 10))))) r)))
 
-(define (valid-calibration? cal concat?)
+(define (valid-calibration? calibration concat?)
+  (define test-val (first calibration))
   (define ops (if concat? (list + * concat) (list + *)))
-  (member
-   (first cal)
-   (let find-possible ([possibilities (list (second cal))] [remaining (drop cal 2)])
-     (if (empty? remaining)
-         possibilities
-         (find-possible
-          (for*/list ([op ops] [possible possibilities])
-            (op possible (first remaining)))
-          (rest remaining))))))
+  (for/fold ([possibilities (list (second calibration))]
+             #:result (member test-val possibilities))
+            ([num (drop calibration 2)])
+    (for*/list ([op ops] [possible possibilities] #:when (< possible test-val))
+      (op possible num))))
 
 (define (sum-valid-calibrations calibrations concat?)
   (for/sum ([calibration calibrations]
