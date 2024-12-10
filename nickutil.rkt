@@ -15,3 +15,7 @@
 (check-equal? (window 2 '(1 2 3 4)) '((1 2) (2 3) (3 4)))
 (check-equal? (window 3 '(1 2 3 4)) '((1 2 3) (2 3 4)))
 (check-equal? (window 4 '(1 2 3 4)) '((1 2 3 4)))
+
+
+;; "unzips" the elements of a list when iterating over a sequence of lists
+(define (sequence-values seq) (sequence-map (curry apply values) seq))
