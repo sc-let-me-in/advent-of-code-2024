@@ -1,6 +1,7 @@
 #lang racket
 
 (require rackunit)
+(require lang/posn)
 
 (provide (all-defined-out))
 
@@ -19,3 +20,10 @@
 
 ;; "unzips" the elements of a list when iterating over a sequence of lists
 (define (sequence-values seq) (sequence-map (curry apply values) seq))
+
+(define (posn-op op p1 p2)
+  (make-posn (op (posn-x p1) (posn-x p2))
+             (op (posn-y p1) (posn-y p2))))
+
+(define posn-sub (curry posn-op -))
+(define posn-add (curry posn-op +))

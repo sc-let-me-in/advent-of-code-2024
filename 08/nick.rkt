@@ -40,13 +40,6 @@ eof
               [(p1 p2) (sequence-values (combinations positions 2))])
     (set-union antinodes (make-antinodes p1 p2 width height))))
 
-(define (posn-op op p1 p2)
-  (make-posn (op (posn-x p1) (posn-x p2))
-             (op (posn-y p1) (posn-y p2))))
-
-(define posn-sub (curry posn-op -))
-(define posn-add (curry posn-op +))
-
 (define (p1-antinodes p1 p2 width height)
   (define dydx (posn-sub p2 p1))
   (list->set
