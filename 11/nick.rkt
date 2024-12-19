@@ -2,6 +2,7 @@
 
 (require rackunit)
 (require "../input.rkt")
+(require "../nickutil.rkt")
 
 (define in (input 11))
 
@@ -9,11 +10,6 @@
 
 (define (parse in)
   (map string->number (string-split in)))
-
-(define-syntax-rule (define/memoized (f args ...) body ...)
-  (define f
-    (let ([cache (make-hash)])
-      (λ (args ...) (hash-ref! cache (list args ...) (thunk body ...))))))
 
 (define digits (compose add1 floor (curryr log 10)))
 

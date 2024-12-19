@@ -27,3 +27,9 @@
 
 (define posn-sub (curry posn-op -))
 (define posn-add (curry posn-op +))
+
+;; memoize any function definition
+(define-syntax-rule (define/memoized (f args ...) body ...)
+  (define f
+    (let ([cache (make-hash)])
+      (λ (args ...) (hash-ref! cache (list args ...) (thunk body ...))))))
